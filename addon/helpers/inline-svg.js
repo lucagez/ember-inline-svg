@@ -10,18 +10,16 @@ import {
 
 export function inlineSvg(svgs, path, options) {
   var jsonPath = dottify(path);
-  var svg = get(svgs, jsonPath);
-
-  // TODO: Ember.get should return `null`, not `undefined`.
-  // if (svg === null && /\.svg$/.test(path))
-  if (typeof svg === "undefined" && /\.svg$/.test(path)) {
-    svg = get(svgs, jsonPath.slice(0, -4));
-  }
+  var svg = get(svgs, jsonPath) || get(svgs, jsonPath.slice(0, -4));
 
   assert(svg, `No SVG found for ${path}`);
 
+  if (!svg) {
+    svg = '<svg></svg>'
+  }
+
   svg = applyClass(svg, options.class);
-  svg = applyTitle(svg, options.title);
+  svg = applyTitle(svg, options.title)
 
   return htmlSafe(svg);
 }
