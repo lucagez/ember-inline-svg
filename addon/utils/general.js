@@ -31,17 +31,17 @@ function isChrome() {
 
 // manual polyfill:
 // => `assert` is not supported on old IE and safari iOS
-const { assert: nativeAssert, error: nativeError } = console;
+const { error } = console;
 
 const noop = function() {}
-
-const error = isChrome() ? (nativeAssert || nativeError) : noop;
 
 // The following is a non-throwing assert
 // It will show a red error message in the console but will not stop the rest
 // of the application to render properly
-export const assert = nativeAssert || function(condition, message) {
+const assertCondition = function(condition, message) {
   if (!condition) {
     error(message);
   }
 }
+
+export const assert = isChrome() ? assertCondition : noop;
