@@ -24,9 +24,18 @@ export function applyTitle(svg = '', title) {
   }
 }
 
+function isChrome() {
+  const agent = ((window.navigator || {}).userAgent || '');
+  return !!window.chrome && /chrome/i.test(agent) && !/edge/i.test(agent);
+}
+
 // manual polyfill:
 // => `assert` is not supported on old IE and safari iOS
-const { assert: nativeAssert, error } = console;
+const { assert: nativeAssert, error: nativeError } = console;
+
+const noop = function() {}
+
+const error = isChrome() ? (nativeAssert || nativeError) : noop;
 
 // The following is a non-throwing assert
 // It will show a red error message in the console but will not stop the rest
